@@ -806,7 +806,10 @@
                     feedback.innerText = "❌ SAI RỒI VỢ ƠI";
                 }
             }
-
+document.addEventListener('click', function() {
+    const audio = document.getElementById('myAudio');
+    audio.play();
+}, { once: true });
             function showMemory() {
                 const m = memories[current];
                 document.getElementById("m-title").innerText = m.title;
