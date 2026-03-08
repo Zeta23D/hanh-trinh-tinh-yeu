@@ -1,0 +1,561 @@
+<!doctype html>
+<html lang="vi">
+    <head>
+        <meta charset="UTF-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+        />
+        <title>8/3 - Hành Trình Hoàng Kim</title>
+        <style>
+            :root {
+                --gold: linear-gradient(
+                    45deg,
+                    #bf953f,
+                    #fcf6ba,
+                    #b38728,
+                    #fbf5b7,
+                    #aa771c
+                );
+                --gold-solid: #bf953f;
+                --dark-red: #3d0000;
+                --text-gold: #fcf6ba;
+            }
+
+            body {
+                font-family: "Times New Roman", serif;
+                background: radial-gradient(circle, #2a0000 0%, #050000 100%);
+                margin: 0;
+                padding: 0;
+                overflow-x: hidden;
+                touch-action: manipulation;
+                color: white;
+            }
+
+            /* Hiệu ứng hạt lấp lánh */
+            .sparkle {
+                position: fixed;
+                background: var(--gold);
+                border-radius: 50%;
+                pointer-events: none;
+                z-index: 1;
+                animation: fall linear infinite;
+            }
+            @keyframes fall {
+                0% {
+                    transform: translateY(-10vh) scale(0);
+                    opacity: 1;
+                }
+                100% {
+                    transform: translateY(100vh) scale(1);
+                    opacity: 0;
+                }
+            }
+
+            /* Intro */
+            #intro {
+                position: fixed;
+                inset: 0;
+                background: #000;
+                z-index: 9999;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                border: 12px double #bf953f;
+                transition: 1s;
+            }
+
+            .gold-btn {
+                background: var(--gold);
+                color: #3d0000;
+                border: none;
+                padding: 15px 40px;
+                border-radius: 30px;
+                font-weight: bold;
+                font-size: 18px;
+                cursor: pointer;
+                box-shadow: 0 0 20px rgba(191, 149, 63, 0.5);
+                transition: 0.3s;
+                text-transform: uppercase;
+            }
+            .gold-btn:active {
+                transform: scale(0.95);
+            }
+
+            /* Đường hành trình */
+            #road-container {
+                position: relative;
+                width: 100%;
+                min-height: 6000px;
+            }
+            .road-line {
+                position: absolute;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 6px;
+                height: 100%;
+                background: var(--gold);
+                opacity: 0.15;
+            }
+            #car {
+                position: absolute;
+                font-size: 55px;
+                transition: 2s cubic-bezier(0.4, 0, 0.2, 1);
+                z-index: 100;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                filter: drop-shadow(0 0 15px gold);
+            }
+            .milestone {
+                position: absolute;
+                width: 60px;
+                height: 60px;
+                background: #8b0000;
+                border: 2px solid #fcf6ba;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 24px;
+                z-index: 50;
+                transform: translate(-50%, -50%);
+                box-shadow: 0 0 15px var(--gold-solid);
+            }
+
+            /* Overlay & Cards */
+            .overlay {
+                position: fixed;
+                inset: 0;
+                background: rgba(0, 0, 0, 0.98);
+                display: none;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                z-index: 10000;
+                padding: 15px;
+            }
+
+            .card {
+                background: #1a0000;
+                border: 3px solid #bf953f;
+                padding: 25px;
+                border-radius: 20px;
+                max-width: 550px;
+                width: 95%;
+                text-align: center;
+                box-shadow: 0 0 40px rgba(191, 149, 63, 0.3);
+                max-height: 92vh;
+                display: flex;
+                flex-direction: column;
+            }
+
+            #m-scroll-area {
+                overflow-y: auto;
+                margin: 15px 0;
+                padding-right: 8px;
+                flex-grow: 1;
+                text-align: left;
+            }
+            #m-desc {
+                color: #fcf6ba;
+                font-size: 16px;
+                line-height: 1.7;
+                margin-bottom: 20px;
+                white-space: pre-line;
+            }
+
+            /* Grid ảnh dạng Masonry (Báo chí) */
+            #m-grid {
+                column-count: 2;
+                column-gap: 12px;
+            }
+            #m-grid img {
+                width: 100%;
+                height: auto;
+                display: block;
+                margin-bottom: 12px;
+                border: 2px solid #bf953f;
+                border-radius: 10px;
+                transition: 0.3s;
+            }
+
+            #m-scroll-area::-webkit-scrollbar {
+                width: 4px;
+            }
+            #m-scroll-area::-webkit-scrollbar-thumb {
+                background: var(--gold);
+                border-radius: 10px;
+            }
+
+            .option-btn {
+                background: rgba(255, 255, 255, 0.05);
+                color: var(--text-gold);
+                border: 1px solid #bf953f;
+                width: 100%;
+                padding: 14px;
+                margin: 8px 0;
+                border-radius: 12px;
+                font-size: 16px;
+                transition: 0.3s;
+            }
+
+            .letter-paper {
+                background: #fdf5e6;
+                color: #3d0000;
+                padding: 30px;
+                border-radius: 5px;
+                max-width: 500px;
+                width: 90%;
+                box-shadow: 5px 5px 30px rgba(0, 0, 0, 0.5);
+                border-left: 8px solid #bf953f;
+                font-family: "Dancing Script", cursive;
+            }
+        </style>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap"
+            rel="stylesheet"
+        />
+    </head>
+    <body>
+        <div id="intro">
+            <h1
+                style="
+                    color: var(--text-gold);
+                    font-size: 2.5em;
+                    text-shadow: 0 0 10px #bf953f;
+                "
+            >
+                Hoàng Kim Hành Trình
+            </h1>
+            <p style="color: #fcf6ba; font-style: italic">
+                Dành tặng người vợ tuyệt vời nhất của anh
+            </p>
+            <button class="gold-btn" onclick="start()">KHÁM PHÁ NGAY ➜</button>
+        </div>
+
+        <div id="quiz-overlay" class="overlay">
+            <div class="card">
+                <h3
+                    style="color: var(--text-gold); font-size: 20px"
+                    id="q-text"
+                ></h3>
+                <div id="options-container"></div>
+                <div
+                    id="q-feedback"
+                    style="font-size: 30px; margin-top: 10px; font-weight: bold"
+                ></div>
+            </div>
+        </div>
+
+        <div id="memory-overlay" class="overlay">
+            <div class="card">
+                <h2
+                    id="m-title"
+                    style="
+                        color: var(--text-gold);
+                        border-bottom: 1px solid rgba(191, 149, 63, 0.3);
+                        padding-bottom: 10px;
+                        margin-top: 0;
+                    "
+                ></h2>
+                <div id="m-scroll-area">
+                    <p id="m-desc"></p>
+                    <div id="m-grid"></div>
+                </div>
+                <button
+                    class="gold-btn"
+                    onclick="nextStep()"
+                    style="width: 100%; margin-top: 10px"
+                >
+                    TIẾP TỤC HÀNH TRÌNH ➜
+                </button>
+            </div>
+        </div>
+
+        <div id="letter-overlay" class="overlay">
+            <div class="letter-paper">
+                <h2 style="text-align: center; color: #8b0000; margin-top: 0">
+                    Vợ yêu à,
+                </h2>
+                <p style="line-height: 1.8; font-size: 19px">
+                    Mỗi trang kỷ niệm chúng ta lật mở hôm nay chỉ là một phần
+                    nhỏ trong cuốn sách hạnh phúc của hai ta. Chúc em một ngày
+                    8/3 rạng rỡ, xinh đẹp và luôn là bến đỗ bình yên nhất của
+                    anh.
+                    <br />
+                    <br />
+                    <b>Mãi mãi yêu em! ❤️</b>
+                </p>
+                <button
+                    class="gold-btn"
+                    style="width: 100%; margin-top: 20px"
+                    onclick="location.reload()"
+                >
+                    XEM LẠI TỪ ĐẦU
+                </button>
+            </div>
+        </div>
+
+        <div id="road-container">
+            <div class="road-line"></div>
+            <div id="car">🏎️</div>
+        </div>
+
+        <script>
+            // --- CHỈNH SỬA THÔNG TIN TẠI ĐÂY ---
+            const memories = [
+                {
+                    title: "1. ĐIỂM KHỞI ĐẦU",
+                    desc: "Ngày đầu tiên ấy, anh đã tìm thấy “báu vật” của cuộc đời mình. Mọi thứ bắt đầu thật giản đơn, nhưng lại mở ra một chương rực rỡ nhất trong cuộc đời anh. Em đến nhẹ nhàng thôi, nhưng đủ để khiến trái tim anh rung động, bối rối và ngỡ ngàng. Từ khoảnh khắc đó, anh đã biết rằng những tháng năm sau này, điều anh muốn làm nhất chính là dành trọn yêu thương và sự chân thành của mình cho em. 💫",
+                    x: "25%",
+                    y: 700,
+                    images: [
+                        "./img_1/img_1.jpg",
+                        "./img_1/img_2.jpg",
+                        "./img_1/img_3.jpg",
+                        "./img_1/img_4.jpg",
+                        "./img_1/img_5.jpg",
+                        "./img_1/img_6.jpg",
+                        "./img_1/img_7.jpg",
+                        "./img_1/img_8.jpg",
+                        "./img_1/img_9.jpg",
+                        "./img_1/img_10.jpg",
+                        "./img_1/img_11.jpg",
+                    ],
+                    question:
+                        "Câu đố: Món đồ đầu tiên anh và em cùng nhau đi mua là gì?",
+                    options: [
+                        "Máy giặt",
+                        "iPhone 12 Pro Max",
+                        "iPhone 15 Pro Max",
+                        "Xe Honda Vision",
+                    ],
+                    answer: 1,
+                },
+                {
+                    title: "2. CHUYẾN HÀNH TRÌNH ĐẦU TIÊN CÙNG NHAU",
+                    desc: "Hành trình đầu tiên của hai đứa mình là chuyến đi công tác cùng nhau tại Sài Gòn. Dù có những lúc cãi nhau, có những khoảnh khắc buồn và cả những điều chưa trọn vẹn, nhưng chính những điều đó lại trở thành kỷ niệm rất riêng của hai đứa. Để rồi giữa những bộn bề ấy, anh nhận ra rằng em chính là người con gái anh yêu thương nhất. Đôi khi nỗi buồn hay sự thất vọng không phải là điểm dừng của tình yêu, mà chỉ là một cột mốc nhỏ trên hành trình, là cánh cửa để hai đứa hiểu nhau hơn và tiếp tục nắm tay nhau bước sang một chặng đường mới.",
+                    x: "75%",
+                    y: 1800,
+                    images: [
+                        "./img_2/img_1.jpg",
+                        "./img_2/img_2.jpg",
+                        "./img_2/img_3.jpg",
+                        "./img_2/img_4.jpg",
+                        "./img_2/img_5.jpg",
+                        "./img_2/img_6.jpg",
+                        "./img_2/img_7.jpg",
+                        "./img_2/img_8.jpg",
+                        "./img_2/img_9.jpg",
+                        "./img_2/img_10.jpg",
+                        "./img_2/img_11.jpg",
+                        "./img_2/img_12.jpg",
+                        "./img_2/img_13.jpg",
+                        "./img_2/img_14.jpg",
+                        "./img_2/img_15.jpg",
+                        "./img_2/img_16.jpg",
+                        "./img_2/img_17.jpg",
+                        "./img_2/img_18.jpg",
+                        "./img_2/img_19.jpg",
+                        "./img_2/img_20.jpg",
+                    ],
+                    question:
+                        "Câu đố: Trong chuyến đi công tác đầu tiên của hai đứa ở Sài Gòn, dù có lúc cãi nhau và buồn lòng, nhưng cuối cùng anh nhận ra điều gì là quan trọng nhất?",
+                    options: [
+                        "Ai đúng ai sai",
+                        "Chuyến đi có vui không",
+                        "Em chính là người anh yêu thương nhất",
+                        "Nên đi công tác một mình",
+                    ],
+                    answer: 2,
+                },
+                {
+                    title: "3. LỜI HẸN ƯỚC (24/01/2026)",
+                    desc: "Giây phút chúng ta nắm tay nhau bước lên xe trong ngày rước dâu là một trong những khoảnh khắc thiêng liêng và đáng nhớ nhất trong cuộc đời anh. Đó không chỉ là giây phút em theo anh về nhà, mà còn là giây phút hai đứa chính thức bắt đầu một hành trình mới – hành trình của vợ chồng, của yêu thương và gắn bó suốt cả cuộc đời. Khi bàn tay em nằm trong tay anh ngày hôm ấy, anh đã thầm hứa với lòng mình rằng sẽ dành cả cuộc đời này để yêu thương, trân trọng và nâng niu em. Anh muốn được ở bên em qua từng ngày bình dị, chăm sóc cho em, chở che cho em, cùng em đi qua những niềm vui, những khó khăn, và cùng nhau viết tiếp thật nhiều kỷ niệm đẹp trên con đường dài phía trước của hai đứa mình.",
+                    x: "30%",
+                    y: 2900,
+                    images: [
+                        "./img_3/img_1.jpg",
+                        "./img_3/img_2.jpg",
+                        "./img_3/img_3.jpg",
+                        "./img_3/img_4.jpg",
+                        "./img_3/img_5.jpg",
+                        "./img_3/img_6.jpg",
+                        "./img_3/img_7.jpg",
+                        "./img_3/img_8.jpg",
+                        "./img_3/img_9.jpg",
+                        "./img_3/img_1.jpg",
+                        "./img_3/img_1.jpg",
+                        "./img_3/img_1.jpg",
+                    ],
+                    question:
+                        "Câu đố: Đám cưới mình vào tháng 1, đố em 'Chồng em' thuộc cung gì?",
+                    options: [
+                        "Cung Ma Kết",
+                        "Cung Bảo Bình",
+                        "Cung Chiều Vợ",
+                        "Cung Thủ",
+                    ],
+                    answer: 2,
+                },
+                {
+                    title: "4. NHỮNG CHUYẾN ĐI",
+                    desc: "Cùng nhau đi khắp thế gian, cùng ngắm những cảnh đẹp. Mỗi vùng đất chúng ta qua đều in dấu những kỷ niệm không thể quên.",
+                    x: "70%",
+                    y: 4000,
+                    images: [
+                        "https://picsum.photos/400/500?random=8",
+                        "https://picsum.photos/400/600?random=9",
+                    ],
+                    question:
+                        "Câu đố: Đố em anh giống cái Google Maps ở điểm nào?",
+                    options: [
+                        "Biết mọi con đường",
+                        "Hay chỉ sai đường",
+                        "Luôn tìm thấy lối về phía em",
+                        "Rất thông minh",
+                    ],
+                    answer: 2,
+                },
+                {
+                    title: "5. HIỆN TẠI & MÃI MÃI",
+                    desc: "Hôm nay là 8/3, và em chính là người phụ nữ tuyệt vời nhất. Hành trình này sẽ không bao giờ kết thúc chừng nào mình còn bên nhau.",
+                    x: "50%",
+                    y: 5100,
+                    images: ["https://picsum.photos/400/600?random=10"],
+                    question:
+                        "Câu đố cuối: Em có biết thứ gì quý giá nhất trên trang web này không?",
+                    options: [
+                        "Màu vàng hoàng kim",
+                        "Chiếc xe 🏎️",
+                        "Những dòng code",
+                        "Chính là em đó ❤️",
+                    ],
+                    answer: 3,
+                },
+            ];
+
+            // --- LOGIC XỬ LÝ ---
+            let current = 0;
+
+            function createSparkles() {
+                for (let i = 0; i < 30; i++) {
+                    const s = document.createElement("div");
+                    s.className = "sparkle";
+                    const size = Math.random() * 3 + 2 + "px";
+                    s.style.width = size;
+                    s.style.height = size;
+                    s.style.left = Math.random() * 100 + "vw";
+                    s.style.animationDuration = Math.random() * 2 + 3 + "s";
+                    document.body.appendChild(s);
+                }
+            }
+            createSparkles();
+
+            const road = document.getElementById("road-container");
+            memories.forEach((m, i) => {
+                const div = document.createElement("div");
+                div.className = "milestone";
+                div.style.left = m.x;
+                div.style.top = m.y + "px";
+                div.innerHTML = i + 1;
+                div.id = "m-" + i;
+                road.appendChild(div);
+            });
+
+            function start() {
+                document.getElementById("intro").style.opacity = "0";
+                setTimeout(
+                    () =>
+                        (document.getElementById("intro").style.display =
+                            "none"),
+                    1000,
+                );
+                moveToNext();
+            }
+
+            function moveToNext() {
+                if (current >= memories.length) {
+                    document.getElementById("letter-overlay").style.display =
+                        "flex";
+                    return;
+                }
+                const m = memories[current];
+                const car = document.getElementById("car");
+                car.style.left = m.x;
+                car.style.top = m.y + "px";
+                car.style.transform = `translate(-50%, -50%) rotate(${parseFloat(m.x) > 50 ? "15" : "-15"}deg)`;
+
+                setTimeout(() => {
+                    window.scrollTo({
+                        top: m.y - window.innerHeight / 2,
+                        behavior: "smooth",
+                    });
+                }, 300);
+
+                setTimeout(showQuiz, 2000);
+            }
+
+            function showQuiz() {
+                const m = memories[current];
+                document.getElementById("q-text").innerText = m.question;
+                const container = document.getElementById("options-container");
+                container.innerHTML = "";
+                m.options.forEach((opt, i) => {
+                    const btn = document.createElement("button");
+                    btn.className = "option-btn";
+                    btn.innerText = opt;
+                    btn.onclick = () => checkAnswer(i);
+                    container.appendChild(btn);
+                });
+                document.getElementById("q-feedback").innerText = "";
+                document.getElementById("quiz-overlay").style.display = "flex";
+            }
+
+            function checkAnswer(idx) {
+                const feedback = document.getElementById("q-feedback");
+                if (idx === memories[current].answer) {
+                    feedback.style.color = "#00ff00";
+                    feedback.innerText = "✨ CHÍNH XÁC ✨";
+                    setTimeout(() => {
+                        document.getElementById("quiz-overlay").style.display =
+                            "none";
+                        showMemory();
+                    }, 1000);
+                } else {
+                    feedback.style.color = "#ff4d4d";
+                    feedback.innerText = "❌ SAI RỒI VỢ ƠI";
+                }
+            }
+
+            function showMemory() {
+                const m = memories[current];
+                document.getElementById("m-title").innerText = m.title;
+                document.getElementById("m-desc").innerText = m.desc;
+                const grid = document.getElementById("m-grid");
+                grid.innerHTML = "";
+
+                m.images.forEach((src) => {
+                    const img = document.createElement("img");
+                    img.src = src;
+                    img.loading = "lazy";
+                    grid.appendChild(img);
+                });
+
+                document.getElementById("m-scroll-area").scrollTop = 0;
+                document.getElementById("memory-overlay").style.display =
+                    "flex";
+            }
+
+            function nextStep() {
+                document.getElementById("memory-overlay").style.display =
+                    "none";
+                document.getElementById("m-" + current).innerHTML = "❤️";
+                current++;
+                setTimeout(moveToNext, 600);
+            }
+        </script>
+    </body>
+</html>
