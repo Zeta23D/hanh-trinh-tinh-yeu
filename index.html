@@ -6,7 +6,7 @@
             name="viewport"
             content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
         />
-        <title>8/3 - Hành Trình Hoàng Kim</title>
+        <title>8/3 - Hành Trình Hoàng Kim Dành tặng Vợ Yến của anh</title>
         <style>
             :root {
                 --gold: linear-gradient(
@@ -32,7 +32,42 @@
                 color: white;
             }
 
-            /* Hiệu ứng hạt lấp lánh */
+            /* --- PHẦN NHẠC (MỚI THÊM) --- */
+            #music-control {
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                z-index: 10001;
+                background: rgba(0, 0, 0, 0.5);
+                border: 1px solid var(--gold-solid);
+                border-radius: 50%;
+                width: 45px;
+                height: 45px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                box-shadow: 0 0 10px var(--gold-solid);
+            }
+
+            .music-icon {
+                font-size: 20px;
+            }
+
+            .rotating {
+                animation: rotate 3s linear infinite;
+            }
+
+            @keyframes rotate {
+                from {
+                    transform: rotate(0deg);
+                }
+                to {
+                    transform: rotate(360deg);
+                }
+            }
+            /* --------------------------- */
+
             .sparkle {
                 position: fixed;
                 background: var(--gold);
@@ -52,7 +87,6 @@
                 }
             }
 
-            /* Intro */
             #intro {
                 position: fixed;
                 inset: 0;
@@ -84,7 +118,6 @@
                 transform: scale(0.95);
             }
 
-            /* Đường hành trình */
             #road-container {
                 position: relative;
                 width: 100%;
@@ -124,7 +157,6 @@
                 box-shadow: 0 0 15px var(--gold-solid);
             }
 
-            /* Overlay & Cards */
             .overlay {
                 position: fixed;
                 inset: 0;
@@ -166,7 +198,6 @@
                 white-space: pre-line;
             }
 
-            /* Grid ảnh dạng Masonry (Báo chí) */
             #m-grid {
                 column-count: 2;
                 column-gap: 12px;
@@ -179,14 +210,6 @@
                 border: 2px solid #bf953f;
                 border-radius: 10px;
                 transition: 0.3s;
-            }
-
-            #m-scroll-area::-webkit-scrollbar {
-                width: 4px;
-            }
-            #m-scroll-area::-webkit-scrollbar-thumb {
-                background: var(--gold);
-                border-radius: 10px;
             }
 
             .option-btn {
@@ -219,6 +242,14 @@
         />
     </head>
     <body>
+        <audio id="bg-music" loop>
+            <source src="nhac-nen.mp3" type="audio/mpeg" />
+        </audio>
+
+        <div id="music-control" onclick="toggleMusic()">
+            <span class="music-icon" id="music-status">🔇</span>
+        </div>
+
         <div id="intro">
             <h1
                 style="
@@ -304,7 +335,7 @@
         </div>
 
         <script>
-            // --- CHỈNH SỬA THÔNG TIN TẠI ĐÂY ---
+            // --- Dữ liệu kỷ niệm (Giữ nguyên của bạn) ---
             const memories = [
                 {
                     title: "1. ĐIỂM KHỞI ĐẦU",
@@ -664,9 +695,40 @@
                 },
             ];
 
-            // --- LOGIC XỬ LÝ ---
+            // --- LOGIC NHẠC ---
+            const audio = document.getElementById("bg-music");
+            const musicBtn = document.getElementById("music-control");
+            const musicIcon = document.getElementById("music-status");
+            let isPlaying = false;
+
+            function toggleMusic() {
+                if (isPlaying) {
+                    audio.pause();
+                    musicIcon.innerText = "🔇";
+                    musicBtn.classList.remove("rotating");
+                } else {
+                    audio.play();
+                    musicIcon.innerText = "🎵";
+                    musicBtn.classList.add("rotating");
+                }
+                isPlaying = !isPlaying;
+            }
+
+            // --- LOGIC XỬ LÝ CHUNG ---
             let current = 0;
 
+            function start() {
+                // Tự động phát nhạc khi ấn bắt đầu (Tránh chính sách chặn auto-play của trình duyệt)
+                if (!isPlaying) toggleMusic();
+
+                document.getElementById("intro").style.opacity = "0";
+                setTimeout(() => {
+                    document.getElementById("intro").style.display = "none";
+                    moveToNext();
+                }, 1000);
+            }
+
+            // --- Các hàm logic khác (Giữ nguyên hoặc copy từ code cũ của bạn) ---
             function createSparkles() {
                 for (let i = 0; i < 30; i++) {
                     const s = document.createElement("div");
@@ -692,17 +754,6 @@
                 road.appendChild(div);
             });
 
-            function start() {
-                document.getElementById("intro").style.opacity = "0";
-                setTimeout(
-                    () =>
-                        (document.getElementById("intro").style.display =
-                            "none"),
-                    1000,
-                );
-                moveToNext();
-            }
-
             function moveToNext() {
                 if (current >= memories.length) {
                     document.getElementById("letter-overlay").style.display =
@@ -721,7 +772,6 @@
                         behavior: "smooth",
                     });
                 }, 300);
-
                 setTimeout(showQuiz, 2000);
             }
 
@@ -763,15 +813,11 @@
                 document.getElementById("m-desc").innerText = m.desc;
                 const grid = document.getElementById("m-grid");
                 grid.innerHTML = "";
-
                 m.images.forEach((src) => {
                     const img = document.createElement("img");
                     img.src = src;
-                    img.loading = "lazy";
                     grid.appendChild(img);
                 });
-
-                document.getElementById("m-scroll-area").scrollTop = 0;
                 document.getElementById("memory-overlay").style.display =
                     "flex";
             }
@@ -779,9 +825,8 @@
             function nextStep() {
                 document.getElementById("memory-overlay").style.display =
                     "none";
-                document.getElementById("m-" + current).innerHTML = "❤️";
                 current++;
-                setTimeout(moveToNext, 600);
+                moveToNext();
             }
         </script>
     </body>
